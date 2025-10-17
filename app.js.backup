@@ -5428,7 +5428,7 @@
         }
         
         // Обновление списка друзей
-        async function updateFriendsList() {
+        function updateFriendsList() {
             const friendsList = document.getElementById('friendsList');
             
             if (friendsData.friends.length === 0) {
@@ -5436,21 +5436,9 @@
                 return;
             }
             
-            // Создаем HTML для каждого друга с получением имени из записной книжки
-            const friendsHtml = await Promise.all(friendsData.friends.map(async friend => {
+            const friendsHtml = friendsData.friends.map(friend => {
                 const unreadCount = unreadMessages[friend.username] || 0;
                 const unreadIndicator = unreadCount > 0 ? `<span class="unread-indicator">${unreadCount}</span>` : '';
-                
-                // Получаем имя контакта из записной книжки
-                let displayName = friend.username; // По умолчанию показываем номер
-                try {
-                    const contactName = await getContactName(friend.username);
-                    if (contactName) {
-                        displayName = contactName; // Показываем имя, если найдено
-                    }
-                } catch (error) {
-                    // Если ошибка получения имени, оставляем номер
-                }
                 
                 return `
                     <div class="friend-item" data-friend="${friend.username}" onclick="openChat('${friend.username}')" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f0f0f0'" onmouseout="this.style.backgroundColor='white'">
@@ -5458,7 +5446,7 @@
                             <div class="friend-avatar" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #ddd; margin-right: 8px; vertical-align: middle; text-align: center; line-height: 20px; font-size: 12px; color: #666;" data-user-id="${friend.contact_user_id}">
                                 <i class="fas fa-user" style="font-size: 10px;"></i>
                             </div>
-                            <span class="friend-display-name" data-phone="${friend.username}">${displayName}</span>${unreadIndicator}
+                            <span class="friend-display-name" data-phone="${friend.username}">${friend.username}</span>${unreadIndicator}
                         </div>
                         <div class="actions" onclick="event.stopPropagation()">
                             <div class="call-buttons">
@@ -5469,9 +5457,9 @@
                         </div>
                     </div>
                 `;
-            }));
+            }).join('');
             
-            friendsList.innerHTML = friendsHtml.join('');
+            friendsList.innerHTML = friendsHtml;
             
             // Загружаем аватары для всех друзей
             loadFriendsAvatars();
@@ -6355,21 +6343,10 @@
                 return;
             }
             
-            // Создаем HTML для каждого друга с получением имени из записной книжки
-            const friendsHtml = await Promise.all(friends.map(async friend => {
+            // Используем тот же стиль, что и обычный список друзей
+            const friendsHtml = friends.map(friend => {
                 const unreadCount = unreadMessages[friend.username] || 0;
                 const unreadIndicator = unreadCount > 0 ? `<span class="unread-indicator">${unreadCount}</span>` : '';
-                
-                // Получаем имя контакта из записной книжки
-                let displayName = friend.username; // По умолчанию показываем номер
-                try {
-                    const contactName = await getContactName(friend.username);
-                    if (contactName) {
-                        displayName = contactName; // Показываем имя, если найдено
-                    }
-                } catch (error) {
-                    // Если ошибка получения имени, оставляем номер
-                }
                 
                 return `
                     <div class="friend-item" data-friend="${friend.username}" onclick="openChat('${friend.username}')" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f0f0f0'" onmouseout="this.style.backgroundColor='white'">
@@ -6377,7 +6354,7 @@
                             <div class="friend-avatar" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #ddd; margin-right: 8px; vertical-align: middle; text-align: center; line-height: 20px; font-size: 12px; color: #666;" data-user-id="${friend.contact_user_id}">
                                 <i class="fas fa-user" style="font-size: 10px;"></i>
                             </div>
-                            <span class="friend-display-name" data-phone="${friend.username}">${displayName}</span>${unreadIndicator}
+                            <span class="friend-display-name" data-phone="${friend.username}">${friend.username}</span>${unreadIndicator}
                         </div>
                         <div class="actions" onclick="event.stopPropagation()">
                             <div class="call-buttons">
@@ -6388,9 +6365,9 @@
                         </div>
                     </div>
                 `;
-            }));
+            }).join('');
             
-            friendsList.innerHTML = friendsHtml.join('');
+            friendsList.innerHTML = friendsHtml;
             
             // Загружаем аватары для отфильтрованных друзей
             loadFilteredFriendsAvatars(friends);

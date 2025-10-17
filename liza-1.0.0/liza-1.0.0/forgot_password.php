@@ -20,13 +20,15 @@
             <p class="register-description">Введите номер телефона, на который зарегистрирован аккаунт</p>
             
             <form id="forgotPasswordForm">
-                <div class="register-form-group">
-                    <label for="phoneNumber" class="register-form-label">Номер телефона</label>
-                    <input type="tel" id="phoneNumber" name="phoneNumber" class="register-form-input" 
+                <div class="premium-form-group">
+                    <label for="phoneNumber" class="premium-form-label">
+                        <i class="fas fa-phone"></i> Номер телефона
+                    </label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" class="premium-form-input" 
                            placeholder="+7 (999) 123-45-67" required>
                 </div>
                 
-                <button type="submit" class="register-button">
+                <button type="submit" class="premium-form-button">
                     <i class="fas fa-phone"></i> Подтвердить номер
                 </button>
             </form>

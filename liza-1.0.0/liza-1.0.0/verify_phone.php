@@ -122,21 +122,11 @@
             color: #333;
             text-decoration: underline;
         }
-        
-        /* Стили для иконок */
-        .status i {
-            margin-right: 8px;
-        }
-        
-        h1 i {
-            margin-right: 10px;
-            color: #0088cc;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-mobile-alt"></i> Подтверждение номера</h1>
+        <h1>📱 Подтверждение номера</h1>
         
         <div class="phone-display" id="phoneDisplay">
             Номер: <span id="phoneNumber"><?php echo htmlspecialchars($_GET['phone'] ?? ''); ?></span>
@@ -177,12 +167,12 @@
             window.open('https://t.me/Lizaapp_bot?start=' + encodeURIComponent(token), '_blank');
             
             // Показываем статус ожидания
-            showStatus('<i class="fas fa-clock"></i> Ожидание подтверждения...', 'pending');
+            showStatus('Ожидание подтверждения...', 'pending');
         }
         
         function showStatus(message, type) {
             const statusDiv = document.getElementById('status');
-            statusDiv.innerHTML = message;
+            statusDiv.textContent = message;
             statusDiv.className = 'status ' + type;
             statusDiv.style.display = 'block';
         }
@@ -203,21 +193,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.verified) {
-                    showStatus('<i class="fas fa-check-circle"></i> Номер успешно подтвержден!', 'success');
+                    showStatus('✅ Номер успешно подтвержден!', 'success');
                     
                     // Сразу перенаправляем на страницу входа
                     setTimeout(() => {
                         window.location.href = 'login.php';
                     }, 1500);
                 } else if (data.success && !data.verified) {
-                    showStatus('<i class="fas fa-clock"></i> Ожидание подтверждения...', 'pending');
+                    showStatus('⏳ Ожидание подтверждения...', 'pending');
                 } else {
-                    showStatus('<i class="fas fa-exclamation-triangle"></i> Ошибка при проверке статуса', 'error');
+                    showStatus('❌ Ошибка при проверке статуса', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error checking verification:', error);
-                showStatus('<i class="fas fa-exclamation-triangle"></i> Ошибка при проверке статуса', 'error');
+                showStatus('❌ Ошибка при проверке статуса', 'error');
             });
         }
         

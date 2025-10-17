@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Видеозвонки - LizaApp</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Система приглашений -->
+    <script src="js/invite-system.js?v=1.3"></script>
+    <!-- Счетчик заявок в друзья -->
+    <script src="js/requests-counter.js?v=1.0"></script>
+    <!-- Загрузчик имен для запросов -->
+    <script src="js/request-names-loader.js?v=1.0"></script>
+</head>
+<body>
+    <!-- Шапка приложения -->
+    <div class="app-header">
+        <div class="logo">
+            <img src="logo.png" alt="LizaApp" class="logo-image">
+        </div>
+        <div class="user-info" id="headerUserInfo" style="display: none;">
+            <div class="user-avatar" id="userAvatar" onclick="openProfile()">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <span id="currentUserId" onclick="openProfile()" style="cursor: pointer;"></span>
+            <button class="logout-btn" onclick="resetUser()" style="display: inline-block;">Выйти</button>
+        </div>
+    </div>
+
+    <div class="container main-container">
+        <!-- Левая панель -->
+        <div class="sidebar left-sidebar">
+            <div class="tabs navigation-tabs">
+                <div class="tab active" onclick="switchTab('friends')"><i class="fas fa-users"></i> <span>Друзья</span></div>
+                <div class="tab" onclick="switchTab('search')"><i class="fas fa-search"></i> <span>Поиск</span></div>
+                <div class="tab" onclick="switchTab('requests')"><i class="fas fa-inbox"></i> <span>Заявки</span></div>
+                <div class="tab" onclick="switchTab('invitations')"><i class="fas fa-paper-plane"></i> <span>Исходящие</span></div>
+            </div>
+            <div class="tab-content sidebar-content">
+                <!-- Таб Поиск -->
+                <div id="searchTab" class="tab-panel search-panel" style="display: none;">
+                    <h3><i class="fas fa-search"></i> Поиск пользователей</h3>
+                    
+                    <!-- Переключатель типа поиска -->
+                    <div class="search-type-switcher">
+                        <button type="button" class="search-type-btn active" onclick="switchSearchType('phone')">
+                            <i class="fas fa-phone"></i> По номеру телефона
+                        </button>
+                        <button type="button" class="search-type-btn" onclick="switchSearchType('username')">
+                            <i class="fas fa-user"></i> По логину
+                        </button>
+                    </div>
+                    
+                    <!-- Поля для поиска по номеру телефона -->
+                    <div id="phoneSearchFields" class="search-fields">
+                        <div class="search-input-container" style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <input type="text" id="searchUsername" placeholder="+79991234567" style="flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px;" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')">
+                        <button onclick="selectFromContacts()" class="btn-secondary contacts-btn" style="border: 1px solid #007bff; background: #007bff; color: white; border-radius: 5px; cursor: pointer;" title="Выбрать из контактов">
+                            <i class="fas fa-address-book"></i>
+                        </button>
+                        <button onclick="searchUser()" class="btn-primary search-btn" style="border: 1px solid var(--accent); background: var(--accent); color: white; border-radius: 5px; cursor: pointer;" title="Найти пользователя">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    </div>
+                    
+                    <!-- Поля для поиска по логину -->
+                    <div id="usernameSearchFields" class="search-fields" style="display: none;">
+                        <div class="search-input-container" style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <input type="text" id="searchUsernameField" placeholder="Введите логин" style="flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px;" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')">
+                            <button onclick="searchUserByUsername()" class="btn-primary search-btn" style="border: 1px solid var(--accent); background: var(--accent); color: white; border-radius: 5px; cursor: pointer;" title="Найти пользователя">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="searchResults"></div>
+                </div>
+                
+                <!-- Таб Друзья -->
+                <div id="friendsTab" class="tab-panel friends-panel">
+                    <h3>Мои друзья</h3>
+                    
+                    <!-- Поиск по друзьям -->
+                    <div class="friends-search-container">
+                        <input type="text" id="friendsSearchInput" placeholder="Поиск по номеру телефона или имени" class="friends-search-input" oninput="filterFriends()" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')">
+                    </div>
+                    
+                    <div id="friendsList" class="friends-list"></div>
+                </div>
+                
+                <!-- Таб Запросы -->
+                <div id="requestsTab" class="tab-panel requests-panel" style="display: none;">
+                    <h3>Входящие запросы</h3>
+                    <div id="requestsList" class="requests-list"></div>
+                </div>
+                
+                <!-- Таб Приглашения -->
+                <div id="invitationsTab" class="tab-panel invitations-panel" style="display: none;">
+                    <h3>Исходящие запросы</h3>
+                    <div id="sentRequestsList" class="sent-requests-list"></div>
+                </div>
+            </div>
+        </div>
+            
+        <!-- Основной контент -->
+        <div class="main-content right-content">
+            <div class="titlemain">
+            <h1><i class="fas fa-phone"></i> Видеозвонки LizaApp</h1>
+            <p><strong>Инструкция:</strong> Войдите под своим логином и позвоните другому пользователю. Второй пользователь должен открыть эту же страницу на другом устройстве.</p>
+            <button onclick="window.open('https://lizaapp.ru/register.php', '_blank')" style="background: #4CAF50; color: white; padding: 10px 20px; margin: 10px 0; border: none; border-radius: 5px; cursor: pointer;">Создать аккаунт</button>
+                </div>
+            
+        <!-- Инструкция по использованию -->
+        <div class="usage-instructions" id="usageInstructions">
+            
+            <div class="quick-start">
+                <h3><i class="fas fa-play-circle"></i> Быстрый старт</h3>
+                <div class="start-steps">
+                    <div class="start-step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">
+                            <h4>Найдите друзей</h4>
+                            <p>Поиск по номеру телефона</p>
+                        </div>
+                </div>
+                    <div class="start-step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">
+                            <h4>Отправьте запрос</h4>
+                            <p>Добавьте в друзья</p>
+                </div>
+                        </div>
+                    <div class="start-step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">
+                            <h4>Дождитесь подтверждения</h4>
+                            <p>Принятие приглашения</p>
+                        </div>
+                    </div>
+                    <div class="start-step">
+                        <div class="step-number">4</div>
+                        <div class="step-text">
+                            <h4>Начните общение</h4>
+                            <p>Сообщения и звонки</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features-showcase">
+                <h3><i class="fas fa-star"></i> Возможности</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Сообщения</h4>
+                            <p>Быстрая переписка с друзьями</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Аудиозвонки</h4>
+                            <p>Голосовые звонки высокого качества</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Видеозвонки</h4>
+                            <p>Видео общение в HD качестве</p>
+                </div>
+                        </div>
+                        </div>
+                    </div>
+                    
+            <div class="security-info">
+                <div class="security-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="security-content">
+                    <h4>Безопасность</h4>
+                    <p>Все данные зашифрованы, приватность гарантирована</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Окно чата в правой части -->
+            <div id="chatContainer" class="chat-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000;">
+                <!-- Заголовок чата -->
+                    <div class="chat-header">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div id="chatFriendAvatar" style="width: 50px; height: 50px; border-radius: 50%; background: #34495e; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                    <div>
+                                <h3 style="margin: 0; font-size: 24px; font-weight: 600;"> Чат с <span id="chatFriendName">Другом</span></h3>
+                                <p style="margin: 5px 0 0 0; opacity: 0.9; font-size: 14px;" id="chatFriendStatus">Соединение установлено</p>
+                            </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                    <button onclick="callFriendFromChat()" class="btn-primary btn-small" id="chatCallBtn" style="padding: 8px 12px; font-size: 12px;"><i class="fas fa-video"></i></button>
+                    <button onclick="callFriendAudioFromChat()" class="btn-secondary btn-small" id="chatAudioCallBtn" style="padding: 8px 12px; font-size: 12px;"><i class="fas fa-phone"></i></button>
+                        <button onclick="closeChat()" style="background: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;">✕</button>
+                    </div>
+                </div>
+                
+                <!-- Область сообщений -->
+            <div class="chat-messages" style="flex: 1; padding: 5px; display: flex; flex-direction: column; height: calc(100% - 140px);">
+                    <!-- Статус подключения -->
+                    <!-- <div id="chatStatus" style="padding: 10px 20px; background: #fff3cd; color: #856404; border-bottom: 1px solid #ffeaa7; font-size: 14px;">
+                        Подключение к чат-серверу...
+                    </div> -->
+                    
+                    <!-- Сообщения чата -->
+                    <div id="chatMessages" class="chat-messages-content" style="flex: 1; padding: 15px; overflow-y: auto; border-radius: 8px; margin: 10px 0;">
+                        <!-- Сообщения будут добавляться здесь -->
+                    </div>
+                    
+                    
+                    <!-- Панель эмодзи -->
+                    <div id="chatEmojiPanel" style="display: none; padding: 10px; background: #e3f2fd; border-top: 1px solid #ddd; border-radius: 8px 8px 0 0;">
+                        <div style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; max-height: 200px; overflow-y: auto;">
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('😀')">😀</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('😂')">😂</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('😍')">😍</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🤔')">🤔</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('👍')">👍</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('👎')">👎</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('❤️')">❤️</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🎉')">🎉</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🔥')">🔥</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('💯')">💯</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🚀')">🚀</span>
+                        <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('💪')">💪</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🎊')">🎊</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🎈')">🎈</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🎁')">🎁</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🎂')">🎂</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🍰')">🍰</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🥳')">🥳</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🎆')">🎆</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🎇')">🎇</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('✨')">✨</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🌟')">🌟</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('💫')">💫</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('⚡')">⚡</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('💎')">💎</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🎯')">🎯</span>
+                            <span style="padding: 5px; cursor: pointer; border-radius: 5px; text-align: center; font-size: 18px;" onclick="sendChatEmoji('🏆')">🏆</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Панель ввода сообщения (обычная) -->
+                    <div id="chatInputPanel" class="chat-input-panel" style="display: flex;">
+                        <input type="text" id="chatMessageInput" class="chat-message-input" placeholder="Введите сообщение..." onkeypress="handleChatKeyPress(event)" autocomplete="off">
+                        <button onclick="sendChatMessage()" class="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+                        <button onclick="toggleChatEmojiPanel()" class="chat-emoji-btn"><i class="far fa-smile"></i></button>
+                    </div>
+                    
+                    <!-- Меню для выделенных сообщений -->
+                    <div id="selectedMessagesMenu" class="selected-messages-menu" style="display: none;">
+                        <div class="selected-count">
+                            <span id="selectedCount">0</span> сообщений выбрано
+                        </div>
+                        <div class="selected-messages-actions">
+                            <button onclick="deleteSelectedMessages()" class="selected-message-btn danger"><i class="fas fa-trash"></i> Удалить</button>
+                            <button onclick="copySelectedMessages()" class="selected-message-btn"><i class="fas fa-copy"></i> Копировать</button>
+                            <button onclick="resendSelectedMessages()" class="selected-message-btn primary"><i class="fas fa-redo"></i> Повторить</button>
+                            <button onclick="clearSelection()" class="selected-message-btn"><i class="fas fa-times"></i> Отменить</button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="user-section profile-section user-profile">
+            <h2></h2>
+            <div id="loginSection" class="login-form" style="display: none;">
+                <input type="text" id="userId" value="" placeholder="Введите ваш логин" autocomplete="off">
+                <input type="password" id="userPassword" value="" placeholder="Введите пароль" style="display: none;">
+                <button onclick="showPasswordField(event)">Войти</button>
+            </div>
+            
+            <div id="userInfo" class="user-info-panel" style="display: none;">
+                <div id="userStatus" class="status disconnected">Отключен</div>
+                <p><strong>Логин:</strong> <span id="profileCurrentUserId"></span></p>
+                <input type="text" id="targetUserId" value="" placeholder="Введите логин собеседника" class="old-functionality" autocomplete="off">
+                <button onclick="startCall()" id="startCallBtn" disabled style="background: #4CAF50; color: white; display: none;" class="old-functionality"><i class="fas fa-phone"></i> Позвонить</button>
+                <button onclick="disconnectCall()" id="disconnectBtn" disabled style="background: #f44336; color: white; display: none;" class="old-functionality">🔌 Разорвать соединение</button>
+                <button onclick="logout()" style="background: #ff9800; color: white;"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            </div>
+        
+            <!-- Окно видеозвонка в правой части -->
+            <div id="videoCallContainer" class="video-call-container" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000;">
+                <!-- Заголовок -->
+                <div style="background: #f8f9fa; color: white; padding: 0px; border-radius: 0;">
+                   */ <h3 style="margin: 0; font-size: 1px; font-weight: 600;"><i class="fas fa-video"></i>Видеозвонок</h3>
+                    <p style="margin: 0px 0 0 0; opacity: 0.9; font-size: 1px;">Соединение установлено</p> */
+                </div>
+                
+                <!-- Область видео -->
+                <div style="flex: 1; padding: 30px; display: flex; flex-direction: column; gap: 30px; justify-content: center; align-items: center; background: #f8f9fa; height: calc(100% - 140px);">
+                    <!-- Видео контейнер -->
+                    <div style="display: flex; gap: 30px; justify-content: center; align-items: center;">
+                        <!-- Локальное видео -->
+                        <div style="position: relative;">
+                            <video id="localVideo" autoplay muted style="width: 400px; height: 400px; background: #000; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" volume="0"></video>
+                            <div style="position: absolute; bottom: 15px; left: 15px; background: #2c3e50; color: white; padding: 8px 15px; border-radius: 4px; font-size: 14px; font-weight: 500;">Вы</div>
+                        </div>
+                        
+                        <!-- Удаленное видео -->
+                        <div style="position: relative;">
+                            <video id="remoteVideo" autoplay style="width: 400px; height: 400px; background: #000; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"></video>
+                            <div style="position: absolute; bottom: 15px; left: 15px; background: #2c3e50; color: white; padding: 8px 15px; border-radius: 4px; font-size: 14px; font-weight: 500;">Собеседник</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопки управления звонком -->
+                    <div style="text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 20px;">
+                        <button onclick="toggleVideoMicrophone()" id="videoMicrophoneBtn" class="control-btn microphone-btn">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button onclick="toggleVideoCamera()" id="videoCameraBtn" class="control-btn camera-btn">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button onclick="switchCamera()" class="control-btn switch-camera-btn">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button onclick="endCall()" class="control-btn end-call-btn">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Окно аудиозвонка -->
+            <div id="audioCallContainer" class="audio-call-container" style="display: none;">
+                <div class="audio-call-window">
+                    <div class="audio-call-header">
+                        <div class="caller-info">
+                            <div id="audioCallerAvatar" class="caller-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="caller-details">
+                                <div class="caller-name" id="audioCallerName">Имя звонящего</div>
+                                <div class="call-timer" id="audioCallTimer">00:00</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="audio-call-content">
+                        <div class="audio-indicator">
+                            <div class="audio-waves">
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="audio-controls">
+                            <button onclick="toggleMicrophone()" id="audioMicrophoneBtn" class="control-btn microphone-btn">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button onclick="toggleSpeakerphone()" id="speakerphoneBtn" class="control-btn speakerphone-btn">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            <button onclick="endCall()" class="control-btn end-call-btn">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div id="log" class="log"></div>
+        </div>
+        
+        <!-- Окно входящего звонка -->
+        <div id="incomingCallModal" class="incoming-call-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center;">
+            <div class="incoming-call-container">
+                <!-- Иконка телефона с волнами -->
+                <div class="call-icon-container">
+                    <i class="fas fa-phone call-icon"></i>
+                </div>
+                
+                <!-- Статус звонка -->
+                <div class="call-status">Входящий вызов...</div>
+                
+                <!-- Тип звонка -->
+                <div id="callTypeText" class="call-type">Тип звонка</div>
+                
+                <!-- Аватар звонящего -->
+                <div class="caller-avatar-container">
+                    <div id="callerAvatarPlaceholder" class="caller-avatar-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                
+                <!-- Имя звонящего -->
+                <div class="caller-name" id="callerName">Загрузка...</div>
+                
+                <!-- Кнопки действий -->
+                <div class="call-actions">
+                    <button onclick="acceptIncomingCall()" class="accept-btn">
+                        <i class="fas fa-phone"></i>
+                        <span>Принять</span>
+                    </button>
+                    <button onclick="rejectIncomingCall()" class="decline-btn">
+                        <i class="fas fa-phone-slash"></i>
+                        <span>Отклонить</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Окно чата -->
+        <div id="chatModal" class="chat-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1001; justify-content: center; align-items: center;">
+            <div style="background: white; width: 400px; height: 500px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
+                <!-- Заголовок чата -->
+                <div style="background: #2196F3; color: white; padding: 15px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 style="margin: 0;">💬 Чат с <span id="chatFriendName"></span></h3>
+                    <button onclick="closeChat()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✕</button>
+            </div>
+            
+                <!-- Область сообщений -->
+                <div id="chatMessages" style="flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9;">
+                    <!-- Сообщения будут добавляться здесь -->
+        </div>
+        
+                <!-- Панель эмодзи -->
+                <div id="emojiPanel" style="display: none; padding: 10px; background: #e3f2fd; border-top: 1px solid #ddd;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                        <span onclick="sendChatEmoji('😀')" style="cursor: pointer; font-size: 20px;">😀</span>
+                        <span onclick="sendChatEmoji('😂')" style="cursor: pointer; font-size: 20px;">😂</span>
+                        <span onclick="sendChatEmoji('😍')" style="cursor: pointer; font-size: 20px;">😍</span>
+                        <span onclick="sendChatEmoji('🤔')" style="cursor: pointer; font-size: 20px;">🤔</span>
+                        <span onclick="sendChatEmoji('👍')" style="cursor: pointer; font-size: 20px;">👍</span>
+                        <span onclick="sendChatEmoji('👎')" style="cursor: pointer; font-size: 20px;">👎</span>
+                        <span onclick="sendChatEmoji('❤️')" style="cursor: pointer; font-size: 20px;">❤️</span>
+                        <span onclick="sendChatEmoji('🎉')" style="cursor: pointer; font-size: 20px;">🎉</span>
+                    </div>
+                </div>
+                
+                <!-- Панель ввода -->
+                <div style="padding: 15px; border-top: 1px solid #ddd; background: white; border-radius: 0 0 15px 15px;">
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="toggleEmojiPanel()" style="background: #ff9800; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">😀</button>
+                        <input type="text" id="messageInput" placeholder="Введите сообщение..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" onkeypress="handleMessageKeyPress(event)" autocomplete="off">
+                        <button onclick="sendMessage()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        <!-- Система друзей -->
+        <div class="user-section friends-section friends-management" id="friendsSection">
+            <h2><i class="fas fa-users"></i> Система друзей</h2>
+            
+            <!-- Поиск пользователей -->
+            <div class="search-section">
+                <h3><i class="fas fa-search"></i> Поиск по номеру телефона</h3>
+                <input type="text" id="searchUsername" placeholder="Введите номер телефона или логин" style="width: 300px;" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')">
+                <button onclick="searchUser()" class="btn-primary"><i class="fas fa-search"></i> Найти</button>
+                <div id="searchResults" class="search-results"></div>
+        </div>
+            
+            <!-- Списки -->
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <!-- Друзья -->
+                <div style="flex: 1; min-width: 250px;">
+                    <h3><i class="fas fa-users"></i> Друзья</h3>
+                    <div id="friendsList" class="friends-list">
+                        <p style="color: #666; text-align: center; margin: 20px 0;">Нет друзей</p>
+                </div>
+        </div>
+            
+                <!-- Запросы в друзья -->
+                <div style="flex: 1; min-width: 250px;">
+                    <h3>📨 Запросы в друзья</h3>
+                    <div id="requestsList" class="requests-list">
+                        <p style="color: #666; text-align: center; margin: 20px 0;">Нет запросов</p>
+                </div>
+            </div>
+            
+                <!-- Отправленные приглашения -->
+                <div style="flex: 1; min-width: 250px;">
+                    <h3><i class="fas fa-paper-plane"></i> Отправленные приглашения</h3>
+                    <div id="sentRequestsList" class="sent-requests-list">
+                        <p style="color: #666; text-align: center; margin: 20px 0;">Нет отправленных приглашений</p>
+                </div>
+        </div>
+        </div>
+        
+        <div class="user-section logs-section system-logs">
+            <h2>📋 Логи</h2>
+            <button onclick="copyLogs()" style="background: #4CAF50; color: white; font-weight: bold;">📋 Копировать логи</button>
+            <p>Эта кнопка скопирует логи для отправки разработчику</p>
+        </div>
+    </div>
+
+    <!-- Подключение внешних JavaScript файлов -->
+    <script src="del.js?v=1"></script>
+    <script>
+        // Проверка авторизации при загрузке страницы
+        window.addEventListener('load', function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                // Пользователь не авторизован, перенаправляем на страницу входа
+                window.location.href = 'login.php';
+                return;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                if (!user.username || !user.sessionToken) {
+                    // Данные пользователя неполные, перенаправляем на страницу входа
+                    localStorage.removeItem('userData');
+                    window.location.href = 'login.php';
+                    return;
+                }
+            } catch (error) {
+                // Ошибка парсинга данных пользователя, перенаправляем на страницу входа
+                console.error('Ошибка парсинга данных пользователя:', error);
+                localStorage.removeItem('userData');
+                window.location.href = 'login.php';
+                return;
+            }
+        });
+        
+        // Функция выхода - перенаправляет на страницу входа
+        function logout() {
+            // Очищаем данные пользователя
+            localStorage.removeItem('userData');
+            
+            // Перенаправляем на страницу входа
+            window.location.href = 'login.php';
+        }
+        
+        function openProfile() {
+            // Открываем личный кабинет в том же окне
+            window.location.href = 'profile.php';
+        }
+        
+    </script>
+    
+    <script>
+        // Принудительное отключение автозаполнения для полей поиска
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInputs = document.querySelectorAll('#searchUsername');
+            searchInputs.forEach(input => {
+                // Устанавливаем атрибуты
+                input.setAttribute('autocomplete', 'new-password');
+                input.setAttribute('autocapitalize', 'off');
+                input.setAttribute('autocorrect', 'off');
+                input.setAttribute('spellcheck', 'false');
+                
+                // Очищаем поле при загрузке
+                input.value = '';
+                
+                // Дополнительные методы отключения
+                input.addEventListener('focus', function() {
+                    this.setAttribute('autocomplete', 'new-password');
+                    this.value = '';
+                });
+                
+                input.addEventListener('input', function() {
+                    this.setAttribute('autocomplete', 'new-password');
+                });
+                
+                // Очищаем поле при каждом фокусе
+                input.addEventListener('focus', function() {
+                    setTimeout(() => {
+                        if (this.value && !this.value.startsWith('+')) {
+                            this.value = '';
+                        }
+                    }, 100);
+                });
+                
+                // Предотвращаем вставку из буфера автозаполнения
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData('text');
+                    if (text && text.startsWith('+')) {
+                        this.value = text;
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <script src="app.js?v=5"></script>
+    <script src="js/contacts-handler.js"></script>
+    
+    <script>
+        // Функция для загрузки аватара пользователя
+        function loadUserAvatar() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) return;
+
+            try {
+                const data = JSON.parse(userData);
+                const userId = data.userId;
+                
+                if (!userId) return;
+
+                // Загружаем данные пользователя из БД
+                fetch(`avtr/api/get_user_data.php?user_id=${userId}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        const userAvatar = document.getElementById('userAvatar');
+                        if (result.success && result.user.avatar_path) {
+                            userAvatar.innerHTML = `<img src="${result.user.avatar_path}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                        } else {
+                            userAvatar.innerHTML = '<i class="fas fa-user-circle"></i>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка загрузки аватара:', error);
+                    });
+            } catch (error) {
+                console.error('Ошибка парсинга userData:', error);
+            }
+        }
+
+        // Функция для обновления аватара после загрузки нового
+        function updateAvatarAfterUpload(avatarPath) {
+            const userAvatar = document.getElementById('userAvatar');
+            if (avatarPath) {
+                userAvatar.innerHTML = `<img src="${avatarPath}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            } else {
+                userAvatar.innerHTML = '<i class="fas fa-user-circle"></i>';
+            }
+        }
+
+
+        // Делаем функцию глобальной
+        window.updateAvatarAfterUpload = updateAvatarAfterUpload;
+
+        // Функция для показа уведомлений
+        function showNotification(message, type = 'info') {
+            // Удаляем предыдущие уведомления
+            const existingNotifications = document.querySelectorAll('.custom-notification');
+            existingNotifications.forEach(notification => notification.remove());
+            
+            // Создаем новое уведомление
+            const notification = document.createElement('div');
+            notification.className = 'custom-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 5px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 10000;
+                max-width: 400px;
+                min-width: 300px;
+                font-size: 14px;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; margin-left: 10px;">&times;</button>
+                </div>
+            `;
+            
+            // Добавляем стили для анимации
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Автоматически скрываем через 5 секунд
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Функция для выбора контакта из записной книжки
+        async function selectFromContacts() {
+            // Проверяем поддержку Contacts API
+            if (!('contacts' in navigator)) {
+                showNotification('Ваш браузер не поддерживает доступ к контактам. Пожалуйста, введите номер вручную.', 'error');
+                return;
+            }
+
+            try {
+                // Запрашиваем разрешение на доступ к контактам
+                const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: false });
+                
+                if (contacts && contacts.length > 0) {
+                    const contact = contacts[0];
+                    const phoneNumber = contact.tel && contact.tel.length > 0 ? contact.tel[0] : null;
+                    
+                    if (phoneNumber) {
+                        // Очищаем номер от лишних символов и форматируем
+                        let cleanNumber = phoneNumber.replace(/[^\d+]/g, '');
+                        
+                        // Если номер не начинается с +, добавляем +7 для российских номеров
+                        if (!cleanNumber.startsWith('+')) {
+                            if (cleanNumber.startsWith('8')) {
+                                cleanNumber = '+7' + cleanNumber.substring(1);
+                            } else if (cleanNumber.startsWith('7')) {
+                                cleanNumber = '+' + cleanNumber;
+                            } else {
+                                cleanNumber = '+7' + cleanNumber;
+                            }
+                        }
+                        
+                        // Подставляем номер в поле поиска
+                        document.getElementById('searchUsername').value = cleanNumber;
+                        
+                        // Сохраняем имя контакта в IndexedDB
+                        if (contact.name) {
+                            try {
+                                await saveContactName(cleanNumber, contact.name);
+                                showNotification('Номер выбран из контактов: ' + contact.name, 'success');
+                            } catch (error) {
+                                console.error('Ошибка сохранения имени контакта:', error);
+                                showNotification('Номер выбран: ' + contact.name, 'success');
+                            }
+                        } else {
+                            showNotification('Номер выбран из контактов', 'success');
+                        }
+                    } else {
+                        showNotification('У выбранного контакта нет номера телефона.', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка при выборе контакта:', error);
+                if (error.name === 'NotAllowedError') {
+                    showNotification('Доступ к контактам запрещен. Пожалуйста, разрешите доступ в настройках браузера.', 'error');
+                } else if (error.name === 'NotSupportedError') {
+                    showNotification('Ваш браузер не поддерживает доступ к контактам.', 'error');
+                } else {
+                    showNotification('Ошибка при выборе контакта: ' + error.message, 'error');
+                }
+            }
+        }
+
+        // Загружаем аватар при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(loadUserAvatar, 1000); // Небольшая задержка для загрузки данных пользователя
+        });
+    </script>
+
+</body>
+</html>
