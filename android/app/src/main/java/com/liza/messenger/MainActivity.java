@@ -61,6 +61,9 @@ public class MainActivity extends BridgeActivity {
         String[] permissions = {
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO
+                // Убираем автоматический запрос разрешений на контакты
+                // Manifest.permission.READ_CONTACTS,
+                // Manifest.permission.WRITE_CONTACTS
         };
 
         boolean needRequest = false;
