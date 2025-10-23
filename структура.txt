@@ -1,0 +1,202 @@
+СТРУКТУРА ПАПКИ 02102025
+========================
+
+КОРНЕВЫЕ ФАЙЛЫ:
+===============
+AI_ASSISTANT_RULES.md
+app.js
+audio-call.php
+auth.html
+background.png
+chat.php
+check_users.php
+check_user_status.php
+check_verification.php
+del.js
+favicon.ico
+forgot_password.php
+GITHUB_SETUP.md
+index.html
+LizaApp_Neon_Theme_Task.md
+login.php
+login_username.php
+logo.png
+logout.php
+premium.php
+profile.php
+PROJECT_DATABASE_RULES.md
+README.md
+README_AUTH_SYSTEM.md
+register.php
+reset_password.php
+setup_bot_commands.php
+setup_telegram.php
+setup_webhook.php
+show_test_users.php
+signals.json
+simple-signal-test-websocket-external-js.html
+simple-signal-test-websocket.html
+styles.css
+telegram_bot.php
+TELEGRAM_BOT_SETUP.md
+telegram_tokens.json
+telegram_webhook.php
+test-amber-theme.html
+test-avatar-cache.html
+test-call-type-display.html
+test-chat-status.html
+test-friends-search.html
+test-incoming-call-avatar.html
+test-message-sending.html
+test-outgoing-call-avatar.html
+test-selection-menu.html
+verify_phone.php
+verify_phone_call.php
+webrtc-config-alternative.js
+
+ПАПКА API:
+===========
+accept_invitation.php
+call_status.php
+call_verification.php
+check_auth.php
+check_avatars.php
+check_call_status.php
+check_login_availability.php
+check_users.php
+check_user_status.php
+clear_contacts.php
+create_test_users.php
+generate_new_password.php
+get_contacts.php
+get_contacts_test.php
+get_rejected.php
+get_rejected_test.php
+get_requests.php
+get_requests_count.php
+get_requests_test.php
+get_sent_requests.php
+get_user_data.php
+get_user_profile.php
+get_user_status.php
+login.php
+logout.php
+premium_application.php
+register.html
+register.php
+reject_invitation.php
+request_password_reset.php
+save_new_password.php
+search_user.php
+send_invitation.php
+send_invitation_test.php
+signaling_server.php
+signals.json
+simple-signal-test-websocket.html
+telegram_confirm.php
+test_auth.php
+update_schema.php
+upload_avatar.php
+webrtc_signaling.php
+
+ПАПКА ASSETS:
+=============
+assets/css/
+  - avatar-styles.css
+  - style.css
+
+assets/js/
+  - app.js
+  - webrtc-http.js
+  - webrtc.js
+  - websocket-client-wss-vkcloud.js
+  - websocket-client.js
+
+ПАПКА AVATARS:
+==============
+avatars/ (26 файлов .jpg)
+avatars/time/
+
+ПАПКА AVTR:
+===========
+avtr/api/
+  - change_password.php
+  - get_user_data.php
+  - update_status.php
+  - upload_avatar.php
+
+avtr/avatars/ (13 файлов .jpg)
+avtr/avatars/time/
+
+avtr/css/
+  - avatar-styles.css
+  - password-styles.css
+  - profile-styles.css
+
+avtr/js/
+  - avatar-handler.js
+  - password-handler.js
+
+ПАПКА CONFIG:
+=============
+config/
+  - contacts-app.html
+  - database.php
+
+ПАПКА IMAGES:
+=============
+images/
+  - background.png
+
+ПАПКА INCLUDES:
+===============
+includes/
+  - auth.php
+  - contacts.php
+
+ПАПКА JS:
+=========
+js/
+  - auth-system.js
+  - avatar-handler.js
+  - calls-from-chat.js
+  - calls-websocket.js
+  - config.js
+  - connection-monitoring.js
+  - contacts-handler.js
+  - friends-system.js
+  - indexeddb-storage.js
+  - invite-system.js
+  - localstorage-optimization.js
+  - main-app.js
+  - message-deletion-system.js
+  - messaging-system.js
+  - p2p-functions.js
+  - p2p-management.js
+  - p2p-system.js
+  - password-reset.js
+  - ping-pong-monitoring.js
+  - queue-system.js
+  - request-names-loader.js
+  - requests-counter.js
+  - style.css
+  - timeout-system.js
+  - ui-calls.js
+  - ui-indicators.js
+
+ПАПКА TIME:
+===========
+time/ (пустая)
+
+ПАПКА WORK:
+===========
+work/
+  - ANALYSIS_REPORT.md
+  - copy_files.bat
+  - files_to_copy.txt
+  - FINAL_FILE_LIST.txt
+  - work.txt
+  - структура.txt (этот файл)
+
+ИТОГО ФАЙЛОВ: 150+ файлов
+========================

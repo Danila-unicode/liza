@@ -1,0 +1,167 @@
+ИТОГОВЫЙ СПИСОК ФАЙЛОВ ДЛЯ ANDROID ПРИЛОЖЕНИЯ
+==============================================
+
+ПРОАНАЛИЗИРОВАНО: 113 файлов
+ВСЕГО В ПРОЕКТЕ: 150+ файлов
+
+ВЫСОКИЙ ПРИОРИТЕТ (75+ файлов):
+===============================
+
+КОРНЕВЫЕ ФАЙЛЫ (16):
+- app.js ⭐ ГЛАВНЫЙ ФАЙЛ
+- simple-signal-test-websocket-external-js.html ⭐ ОСНОВНОЙ ИНТЕРФЕЙС
+- styles.css
+- auth.html
+- login.php
+- login_username.php
+- register.php
+- chat.php
+- premium.php
+- profile.php
+- forgot_password.php
+- audio-call.php
+- logout.php
+- reset_password.php
+- verify_phone.php
+- verify_phone_call.php
+
+JAVASCRIPT МОДУЛИ (25):
+- js/main-app.js
+- js/auth-system.js
+- js/messaging-system.js
+- js/p2p-system.js
+- js/p2p-functions.js
+- js/calls-websocket.js
+- js/ui-calls.js
+- js/config.js
+- js/connection-monitoring.js
+- js/ping-pong-monitoring.js
+- js/timeout-system.js
+- js/queue-system.js
+- js/p2p-management.js
+- js/calls-from-chat.js
+- js/friends-system.js
+- js/contacts-handler.js
+- js/indexeddb-storage.js
+- js/message-deletion-system.js
+- js/ui-indicators.js
+- js/localstorage-optimization.js
+- js/invite-system.js
+- js/request-names-loader.js
+- js/requests-counter.js
+- js/password-reset.js
+- js/avatar-handler.js
+
+API ФАЙЛЫ (24):
+- api/login.php
+- api/register.php
+- api/check_auth.php
+- api/get_user_data.php
+- api/get_contacts.php
+- api/send_invitation.php
+- api/accept_invitation.php
+- api/reject_invitation.php
+- api/request_password_reset.php
+- api/check_call_status.php
+- api/save_new_password.php
+- api/upload_avatar.php
+- api/get_requests.php
+- api/get_sent_requests.php
+- api/get_rejected.php
+- api/search_user.php
+- api/clear_contacts.php
+- api/webrtc_signaling.php
+- api/signaling_server.php
+- api/get_requests_count.php
+- api/get_user_status.php
+- api/call_status.php
+- api/call_verification.php
+- api/telegram_confirm.php
+
+СИСТЕМА АВАТАРОВ (9):
+- avtr/api/upload_avatar.php
+- avtr/api/change_password.php
+- avtr/api/update_status.php
+- avtr/api/get_user_data.php
+- avtr/css/avatar-styles.css
+- avtr/css/password-styles.css
+- avtr/css/profile-styles.css
+- avtr/js/avatar-handler.js
+- avtr/js/password-handler.js
+
+ДОПОЛНИТЕЛЬНЫЕ ФАЙЛЫ (10):
+- assets/css/avatar-styles.css
+- assets/css/style.css
+- assets/js/app.js
+- assets/js/webrtc-http.js
+- assets/js/webrtc.js
+- assets/js/websocket-client-wss-vkcloud.js
+- assets/js/websocket-client.js
+- includes/auth.php
+- includes/contacts.php
+- webrtc-config-alternative.js
+
+СРЕДНИЙ ПРИОРИТЕТ (3 файла):
+============================
+- api/check_verification.php
+- api/check_login_availability.php
+- api/premium_application.php
+
+НИЗКИЙ ПРИОРИТЕТ (20+ файлов):
+==============================
+
+ТЕСТОВЫЕ HTML (10):
+- test-amber-theme.html
+- test-avatar-cache.html
+- test-call-type-display.html
+- test-chat-status.html
+- test-friends-search.html
+- test-incoming-call-avatar.html
+- test-message-sending.html
+- test-outgoing-call-avatar.html
+- test-selection-menu.html
+- api/simple-signal-test-websocket.html
+
+АДМИНИСТРАТИВНЫЕ (8):
+- check_users.php
+- check_user_status.php
+- api/update_schema.php
+- api/create_test_users.php
+- api/get_contacts_test.php
+- api/get_rejected_test.php
+- api/get_requests_test.php
+- api/send_invitation_test.php
+- api/test_auth.php
+
+ДОКУМЕНТАЦИЯ (7):
+- PROJECT_DATABASE_RULES.md
+- README.md
+- README_AUTH_SYSTEM.md
+- GITHUB_SETUP.md
+- TELEGRAM_BOT_SETUP.md
+- LizaApp_Neon_Theme_Task.md
+- AI_ASSISTANT_RULES.md
+
+СТАТИЧЕСКИЕ РЕСУРСЫ (4):
+- logo.png
+- background.png
+- favicon.ico
+- images/background.png
+
+НЕ КОПИРОВАТЬ:
+==============
+- work/ (уже создана)
+- time/ (временные файлы)
+- config/database.php (устаревшие настройки)
+- index.html (базовая заготовка)
+- del.js (временный файл)
+- signals.json (временные данные)
+- telegram_tokens.json (конфиденциальные данные)
+- telegram_bot.php (Telegram бот)
+- telegram_webhook.php (Telegram webhook)
+- setup_*.php (настройка бота)
+- show_test_users.php (отладочный)
+- webrtc-config-alternative.js (альтернативная конфигурация)
+
+ИТОГО ГОТОВО ДЛЯ ANDROID: 113 файлов
+===================================
