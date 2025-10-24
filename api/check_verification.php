@@ -16,10 +16,7 @@ try {
     $phone = $input['phone'] ?? '';
     
     if (empty($phone)) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Номер телефона не указан'
-        ]);
+        echo json_encode(['success' => false, 'message' => 'Номер телефона не указан']);
         exit;
     }
     
@@ -34,27 +31,20 @@ try {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$user) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Пользователь не найден'
-        ]);
+        echo json_encode(['success' => false, 'message' => 'Пользователь не найден']);
         exit;
     }
     
-    // Проверяем статус подтверждения
+    // Возвращаем статус подтверждения
     $verified = ($user['phone_verified'] == 1 || $user['phone_verified'] === '1' || $user['phone_verified'] === true);
     
     echo json_encode([
         'success' => true,
         'verified' => $verified,
-        'phone_verified' => $user['phone_verified'],
         'user_id' => $user['id']
     ]);
     
 } catch(PDOException $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Ошибка подключения к базе данных: ' . $e->getMessage()
-    ]);
+    echo json_encode(['success' => false, 'message' => 'Ошибка базы данных: ' . $e->getMessage()]);
 }
 ?>

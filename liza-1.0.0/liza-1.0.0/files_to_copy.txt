@@ -1,0 +1,168 @@
+ФАЙЛЫ ДЛЯ КОПИРОВАНИЯ В ПАПКУ WORK
+====================================
+
+ВЫСОКИЙ ПРИОРИТЕТ (ОСНОВНЫЕ ФАЙЛЫ):
+====================================
+
+КОРНЕВЫЕ ФАЙЛЫ:
+- app.js (ГЛАВНЫЙ ФАЙЛ ПРИЛОЖЕНИЯ)
+- styles.css (основные стили)
+- auth.html (страница авторизации)
+- login.php (страница входа по телефону)
+- login_username.php (страница входа по логину)
+- register.php (страница регистрации)
+- chat.php (страница чата)
+- premium.php (премиум страница)
+- profile.php (личный кабинет)
+- forgot_password.php (восстановление пароля)
+- audio-call.php (аудио звонки)
+- logout.php (выход из системы)
+- reset_password.php (сброс пароля)
+- verify_phone.php (подтверждение телефона)
+- verify_phone_call.php (подтверждение звонком)
+- simple-signal-test-websocket-external-js.html (ОСНОВНОЙ ИНТЕРФЕЙС)
+
+JAVASCRIPT ФАЙЛЫ (js/):
+- js/main-app.js (основные функции)
+- js/auth-system.js (авторизация)
+- js/messaging-system.js (сообщения)
+- js/p2p-system.js (P2P соединения)
+- js/p2p-functions.js (основные P2P функции)
+- js/calls-websocket.js (звонки)
+- js/ui-calls.js (UI звонков)
+- js/config.js (конфигурация)
+- js/connection-monitoring.js (мониторинг соединения)
+- js/ping-pong-monitoring.js (ping-pong мониторинг)
+- js/timeout-system.js (система таймаутов)
+- js/queue-system.js (система очередей)
+- js/p2p-management.js (управление P2P)
+- js/calls-from-chat.js (звонки из чата)
+- js/friends-system.js (система друзей)
+- js/contacts-handler.js (обработка контактов)
+- js/indexeddb-storage.js (локальное хранение)
+- js/message-deletion-system.js (удаление сообщений)
+- js/ui-indicators.js (UI индикаторы)
+- js/localstorage-optimization.js (оптимизация localStorage)
+- js/invite-system.js (система приглашений)
+- js/request-names-loader.js (загрузчик имен)
+- js/requests-counter.js (счетчик заявок)
+- js/password-reset.js (восстановление пароля)
+- js/avatar-handler.js (обработка аватаров)
+
+API ФАЙЛЫ (api/):
+- api/login.php (авторизация)
+- api/register.php (регистрация)
+- api/check_auth.php (проверка авторизации)
+- api/get_user_data.php (данные пользователя)
+- api/get_contacts.php (контакты)
+- api/send_invitation.php (отправка приглашений)
+- api/accept_invitation.php (принятие приглашений)
+- api/reject_invitation.php (отклонение приглашений)
+- api/request_password_reset.php (запрос восстановления)
+- api/check_call_status.php (проверка звонка)
+- api/save_new_password.php (сохранение пароля)
+- api/upload_avatar.php (загрузка аватаров)
+- api/get_requests.php (заявки в друзья)
+- api/get_sent_requests.php (отправленные заявки)
+- api/get_rejected.php (отклоненные заявки)
+- api/search_user.php (поиск пользователей)
+- api/clear_contacts.php (очистка контактов)
+- api/webrtc_signaling.php (WebRTC сигналинг)
+- api/signaling_server.php (сервер сигналинга)
+- api/get_requests_count.php (количество заявок)
+- api/get_user_status.php (статус пользователя)
+- api/call_status.php (статус звонка SMS.ru)
+- api/call_verification.php (верификация звонка SMS.ru)
+- api/telegram_confirm.php (подтверждение через Telegram)
+
+СИСТЕМА АВАТАРОВ (avtr/):
+- avtr/api/upload_avatar.php
+- avtr/api/change_password.php
+- avtr/api/update_status.php
+- avtr/api/get_user_data.php
+- avtr/css/avatar-styles.css
+- avtr/css/password-styles.css
+- avtr/css/profile-styles.css
+- avtr/js/avatar-handler.js
+- avtr/js/password-handler.js
+
+ДОПОЛНИТЕЛЬНЫЕ ФАЙЛЫ:
+- assets/css/avatar-styles.css
+- assets/css/style.css
+- assets/js/app.js
+- assets/js/webrtc-http.js
+- assets/js/webrtc.js
+- assets/js/websocket-client-wss-vkcloud.js
+- assets/js/websocket-client.js
+- includes/auth.php
+- includes/contacts.php
+- webrtc-config-alternative.js
+
+СРЕДНИЙ ПРИОРИТЕТ (ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ):
+============================================
+
+API ФАЙЛЫ:
+- api/check_verification.php (проверка подтверждения)
+- api/check_login_availability.php (проверка доступности логина)
+- api/premium_application.php (премиум заявки)
+
+НИЗКИЙ ПРИОРИТЕТ (ТЕСТОВЫЕ И АДМИНИСТРАТИВНЫЕ):
+==============================================
+
+ТЕСТОВЫЕ HTML ФАЙЛЫ:
+- test-amber-theme.html
+- test-avatar-cache.html
+- test-call-type-display.html
+- test-chat-status.html
+- test-friends-search.html
+- test-incoming-call-avatar.html
+- test-message-sending.html
+- test-outgoing-call-avatar.html
+- test-selection-menu.html
+- api/simple-signal-test-websocket.html
+
+АДМИНИСТРАТИВНЫЕ ФАЙЛЫ:
+- check_users.php
+- check_user_status.php
+- reset_password.php
+- api/clear_contacts.php
+- api/update_schema.php
+- api/create_test_users.php
+- api/get_contacts_test.php
+- api/get_rejected_test.php
+- api/get_requests_test.php
+- api/send_invitation_test.php
+- api/test_auth.php
+
+ДОКУМЕНТАЦИЯ:
+- PROJECT_DATABASE_RULES.md
+- README.md
+- README_AUTH_SYSTEM.md
+- GITHUB_SETUP.md
+- TELEGRAM_BOT_SETUP.md
+- LizaApp_Neon_Theme_Task.md
+- AI_ASSISTANT_RULES.md
+
+СТАТИЧЕСКИЕ РЕСУРСЫ:
+- logo.png
+- background.png
+- favicon.ico
+- images/background.png
+
+ПАПКИ С АВАТАРАМИ:
+- avatars/ (все файлы .jpg)
+- avtr/avatars/ (все файлы .jpg)
+
+НЕ КОПИРОВАТЬ:
+- work/ (уже создана)
+- time/ (временные файлы)
+- config/database.php (устаревшие настройки)
+- index.html (базовая заготовка)
+- del.js (временный файл)
+- signals.json (временные данные)
+- telegram_tokens.json (конфиденциальные данные)
+- telegram_bot.php (Telegram бот)
+- telegram_webhook.php (Telegram webhook)
+- setup_*.php (настройка бота)
+- show_test_users.php (отладочный)
+- webrtc-config-alternative.js (альтернативная конфигурация)

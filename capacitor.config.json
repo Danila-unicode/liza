@@ -1,0 +1,10 @@
+{
+  "appId": "com.liza.messenger",
+  "appName": "Liza Messenger",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://lizaapp.ru/simple-signal-test-websocket-external-js.html",
+    "cleartext": false
+  }
+}
