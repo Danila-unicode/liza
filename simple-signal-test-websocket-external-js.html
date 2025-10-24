@@ -38,7 +38,7 @@
             <div class="tabs navigation-tabs">
                 <div class="tab active" onclick="switchTab('friends')"><i class="fas fa-users"></i> <span>Друзья</span></div>
                 <div class="tab" onclick="switchTab('search')"><i class="fas fa-search"></i> <span>Поиск</span></div>
-                <div class="tab" onclick="switchTab('requests')"><i class="fas fa-inbox"></i> <span>Заявки</span></div>
+                <div class="tab" onclick="switchTab('requests')"><i class="fas fa-inbox"></i> <span>Запросы</span></div>
                 <div class="tab" onclick="switchTab('invitations')"><i class="fas fa-paper-plane"></i> <span>Исходящие</span></div>
             </div>
             <div class="tab-content sidebar-content">
@@ -85,6 +85,7 @@
                 <!-- Таб Друзья -->
                 <div id="friendsTab" class="tab-panel friends-panel">
                     <h3>Мои друзья</h3>
+                    
                     
                     <!-- Поиск по друзьям -->
                     <div class="friends-search-container">
@@ -206,7 +207,7 @@
                                 <i class="fas fa-user"></i>
                             </div>
                     <div>
-                                <h3 style="margin: 0; font-size: 24px; font-weight: 600;"> Чат с <span id="chatFriendName">Другом</span></h3>
+                                <h3 style="margin: 0; font-size: 24px; font-weight: 600;"><span id="chatFriendName"></span></h3>
                                 <p style="margin: 5px 0 0 0; opacity: 0.9; font-size: 14px;" id="chatFriendStatus">Соединение установлено</p>
                             </div>
                     </div>
@@ -429,11 +430,11 @@
 
         <!-- Окно чата -->
         <div id="chatModal" class="chat-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1001; justify-content: center; align-items: center;">
-            <div style="background: white; width: 400px; height: 500px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
+            <div style="background: white; width: 400px; height: 500px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-width: 95vw; max-height: 85vh;">
                 <!-- Заголовок чата -->
                 <div style="background: #2196F3; color: white; padding: 15px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center;">
-                    <h3 style="margin: 0;">💬 Чат с <span id="chatFriendName"></span></h3>
-                    <button onclick="closeChat()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✕</button>
+                    <h3 style="margin: 0; font-size: 16px;">💬 Чат с <span id="chatFriendName"></span></h3>
+                    <button onclick="closeChat()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 0 10px; min-width: 40px;">✕</button>
             </div>
             
                 <!-- Область сообщений -->
@@ -456,11 +457,11 @@
                 </div>
                 
                 <!-- Панель ввода -->
-                <div style="padding: 15px; border-top: 1px solid #ddd; background: white; border-radius: 0 0 15px 15px;">
-                    <div style="display: flex; gap: 10px;">
-                        <button onclick="toggleEmojiPanel()" style="background: #ff9800; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">😀</button>
-                        <input type="text" id="messageInput" placeholder="Введите сообщение..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" onkeypress="handleMessageKeyPress(event)" autocomplete="off">
-                        <button onclick="sendMessage()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Отправить</button>
+                <div style="padding: 15px; border-top: 1px solid #ddd; background: white; border-radius: 0 0 15px 15px; flex-shrink: 0;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button onclick="toggleEmojiPanel()" style="background: #ff9800; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; flex-shrink: 0;">😀</button>
+                        <input type="text" id="messageInput" placeholder="Введите сообщение..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; min-width: 0;" onkeypress="handleMessageKeyPress(event)" autocomplete="off">
+                        <button onclick="sendMessage()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; flex-shrink: 0;">Отправить</button>
                     </div>
                 </div>
             </div>
@@ -602,7 +603,7 @@
         });
     </script>
     
-    <script src="app.js?v=5"></script>
+    <script src="app.js?v=35"></script>
     <script src="js/contacts-handler.js"></script>
     
     <script>
@@ -702,9 +703,246 @@
             }, 5000);
         }
 
+        // Функция для обработки выбранного контакта
+        async function processSelectedContact(contact) {
+            console.log('🔍 Контакт:', contact);
+            console.log('🔍 Телефоны:', contact.phones);
+            
+            const phoneNumber = contact.phones && contact.phones.length > 0 ? contact.phones[0] : null;
+            console.log('🔍 Выбранный номер:', phoneNumber, 'тип:', typeof phoneNumber);
+            
+            if (phoneNumber) {
+                // Извлекаем номер из объекта (может быть объектом с полем number)
+                let phoneStr = phoneNumber;
+                if (typeof phoneNumber === 'object' && phoneNumber.number) {
+                    phoneStr = phoneNumber.number;
+                } else if (typeof phoneNumber === 'object' && phoneNumber.value) {
+                    phoneStr = phoneNumber.value;
+                }
+                
+                console.log('🔍 Извлеченный номер:', phoneStr);
+                
+                // Преобразуем в строку и очищаем номер от лишних символов
+                let cleanNumber = String(phoneStr).replace(/[^\d+]/g, '');
+                
+                // Если номер не начинается с +, добавляем +7 для российских номеров
+                if (!cleanNumber.startsWith('+')) {
+                    if (cleanNumber.startsWith('8')) {
+                        cleanNumber = '+7' + cleanNumber.substring(1);
+                    } else if (cleanNumber.startsWith('7')) {
+                        cleanNumber = '+' + cleanNumber;
+                    } else {
+                        cleanNumber = '+7' + cleanNumber;
+                    }
+                }
+                
+                // Подставляем номер в поле поиска
+                document.getElementById('searchUsername').value = cleanNumber;
+                
+                // Сохраняем имя контакта в IndexedDB
+                if (contact.name) {
+                    try {
+                        await saveContactName(cleanNumber, contact.name);
+                        showNotification('Номер выбран из контактов: ' + contact.name, 'success');
+                    } catch (error) {
+                        console.error('Ошибка сохранения имени контакта:', error);
+                        showNotification('Номер выбран: ' + contact.name, 'success');
+                    }
+                } else {
+                    showNotification('Номер выбран из контактов', 'success');
+                }
+            } else {
+                showNotification('У выбранного контакта нет номера телефона.', 'error');
+            }
+        }
+
         // Функция для выбора контакта из записной книжки
         async function selectFromContacts() {
-            // Проверяем поддержку Contacts API
+            // Проверяем, находимся ли мы в нативном приложении
+            const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
+            
+            if (isNative && window.Capacitor?.Plugins?.Contacts) {
+                // Используем нативный плагин Capacitor
+                try {
+                    console.log('✅ Используем нативный плагин Contacts');
+                    
+                    // Проверяем разрешения
+                    const permissions = await window.Capacitor.Plugins.Contacts.checkPermissions();
+                    console.log('🔍 Разрешения:', permissions);
+                    
+                    if (permissions.contacts !== 'granted') {
+                        console.log('🔍 Запрашиваем разрешения...');
+                        const requestResult = await window.Capacitor.Plugins.Contacts.requestPermissions();
+                        console.log('🔍 Результат запроса:', requestResult);
+                        
+                        if (requestResult.contacts !== 'granted') {
+                            showNotification('Нет разрешения на доступ к контактам', 'error');
+                            return;
+                        }
+                    }
+                    
+                    // Получаем контакты через нативный плагин
+                    const result = await window.Capacitor.Plugins.Contacts.getContacts({
+                        projection: {
+                            name: true,
+                            phones: true
+                        }
+                    });
+                    
+                    console.log('🔍 Получено контактов:', result.contacts.length);
+                    
+                    if (result.contacts && result.contacts.length > 0) {
+                        // Показываем список контактов для выбора
+                        let contact;
+                        if (result.contacts.length === 1) {
+                            // Если только один контакт, берем его
+                            contact = result.contacts[0];
+                            showNotification('Найден 1 контакт', 'info');
+                        } else {
+                            // Если несколько контактов, показываем список для выбора
+                            showNotification(`Найдено ${result.contacts.length} контактов. Показываем список для выбора...`, 'info');
+                            
+                            // Создаем модальное окно для выбора контакта
+                            const modal = document.createElement('div');
+                            modal.style.cssText = `
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                background: rgba(0,0,0,0.5);
+                                z-index: 10000;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            `;
+                            
+                            const modalContent = document.createElement('div');
+                            modalContent.style.cssText = `
+                                background: white;
+                                border-radius: 10px;
+                                padding: 20px;
+                                max-width: 90%;
+                                max-height: 80%;
+                                overflow-y: auto;
+                            `;
+                            
+                            modalContent.innerHTML = `
+                                <h3>Выберите контакт:</h3>
+                                <div id="contactsList"></div>
+                                <button onclick="this.closest('.contact-modal').remove()" style="margin-top: 10px; padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px;">Отмена</button>
+                            `;
+                            
+                            modal.className = 'contact-modal';
+                            modal.appendChild(modalContent);
+                            document.body.appendChild(modal);
+                            
+                           // Заполняем список контактов
+                           const contactsList = modalContent.querySelector('#contactsList');
+                           
+                           result.contacts.forEach((contactItem, index) => {
+                                const contactDiv = document.createElement('div');
+                                contactDiv.style.cssText = `
+                                    padding: 10px;
+                                    border: 1px solid #ddd;
+                                    margin: 5px 0;
+                                    border-radius: 5px;
+                                    cursor: pointer;
+                                `;
+                                
+                               // Правильно извлекаем имя - пробуем разные варианты
+                               let name = 'Без имени';
+                               
+                               // Проверяем name - может быть объектом
+                               if (contactItem.name) {
+                                   if (typeof contactItem.name === 'string') {
+                                       name = contactItem.name;
+                                   } else if (typeof contactItem.name === 'object') {
+                                       // Если name это объект, ищем в нем строковое значение
+                                       if (contactItem.name.givenName) {
+                                           name = contactItem.name.givenName;
+                                           if (contactItem.name.familyName) {
+                                               name += ' ' + contactItem.name.familyName;
+                                           }
+                                       } else if (contactItem.name.displayName) {
+                                           name = contactItem.name.displayName;
+                                       } else {
+                                           // Пробуем найти любое строковое значение в объекте name
+                                           for (const key in contactItem.name) {
+                                               if (typeof contactItem.name[key] === 'string' && contactItem.name[key].trim()) {
+                                                   name = contactItem.name[key];
+                                                   break;
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+                               
+                               // Если name все еще не найден, пробуем другие поля
+                               if (name === 'Без имени') {
+                                   if (contactItem.displayName && typeof contactItem.displayName === 'string') {
+                                       name = contactItem.displayName;
+                                   } else if (contactItem.firstName && typeof contactItem.firstName === 'string') {
+                                       name = contactItem.firstName;
+                                       if (contactItem.lastName && typeof contactItem.lastName === 'string') {
+                                           name += ' ' + contactItem.lastName;
+                                       }
+                                   } else if (contactItem.givenName && typeof contactItem.givenName === 'string') {
+                                       name = contactItem.givenName;
+                                       if (contactItem.familyName && typeof contactItem.familyName === 'string') {
+                                           name += ' ' + contactItem.familyName;
+                                       }
+                                   } else {
+                                       // Если ничего не найдено, показываем доступные поля
+                                       const availableFields = Object.keys(contactItem).join(', ');
+                                       name = `Контакт #${index + 1} (${availableFields})`;
+                                   }
+                               }
+                               
+                               const phones = contactItem.phones || contactItem.phoneNumbers || [];
+                               let phoneText = 'Нет номера';
+                               
+                               if (phones.length > 0) {
+                                   // Если phone это объект, извлекаем значение
+                                   if (typeof phones[0] === 'object' && phones[0].number) {
+                                       phoneText = phones[0].number;
+                                   } else if (typeof phones[0] === 'string') {
+                                       phoneText = phones[0];
+                                   } else {
+                                       phoneText = String(phones[0]);
+                                   }
+                               }
+                                
+                                contactDiv.innerHTML = `
+                                    <strong>${name}</strong><br>
+                                    <small>${phoneText}</small>
+                                `;
+                                
+                                contactDiv.onclick = () => {
+                                    contact = contactItem;
+                                    modal.remove();
+                                    processSelectedContact(contact);
+                                };
+                                
+                                contactsList.appendChild(contactDiv);
+                            });
+                            
+                            return; // Выходим, ждем выбора пользователя
+                        }
+                        
+                        // Обрабатываем выбранный контакт
+                        processSelectedContact(contact);
+                    } else {
+                        showNotification('Контакты не найдены', 'error');
+                    }
+                } catch (error) {
+                    console.error('Ошибка при выборе контакта через нативный плагин:', error);
+                    showNotification('Ошибка доступа к контактам: ' + error.message, 'error');
+                }
+                return;
+            }
+            
+            // Fallback для веб-браузера (если не нативная платформа)
             if (!('contacts' in navigator)) {
                 showNotification('Ваш браузер не поддерживает доступ к контактам. Пожалуйста, введите номер вручную.', 'error');
                 return;
@@ -768,6 +1006,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(loadUserAvatar, 1000); // Небольшая задержка для загрузки данных пользователя
         });
+        
     </script>
 
 </body>

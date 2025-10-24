@@ -1,0 +1,191 @@
+Ñòðóêòóðà ïàïîê òîìà Windows
+Ñåðèéíûé íîìåð òîìà: 8014-6AD4
+C:.
+¦   AI_ASSISTANT_RULES.md
+¦   ANALYSIS_REPORT.md
+¦   app.js
+¦   ASSISTANT_RULES.md
+¦   audio-call.php
+¦   auth.html
+¦   background.png
+¦   chat.php
+¦   check_users.php
+¦   check_user_status.php
+¦   copy_files.bat
+¦   copy_files_fixed.bat
+¦   copy_files_smart.bat
+¦   favicon.ico
+¦   files_to_copy.txt
+¦   FINAL_FILE_LIST.txt
+¦   forgot_password.php
+¦   GITHUB_SETUP.md
+¦   index.html
+¦   LizaApp_Neon_Theme_Task.md
+¦   login.php
+¦   login_username.php
+¦   logo.png
+¦   logout.php
+¦   premium.php
+¦   profile.php
+¦   PROJECT_DATABASE_RULES.md
+¦   README.md
+¦   README_AUTH_SYSTEM.md
+¦   register.php
+¦   reset_password.php
+¦   simple-signal-test-websocket-external-js.html
+¦   styles.css
+¦   TELEGRAM_BOT_SETUP.md
+¦   verify_phone.php
+¦   verify_phone_call.php
+¦   webrtc-config-alternative.js
+¦   work.txt
+¦   workfiles.txt
+¦   ñòðóêòóðà.txt
+¦   
++---api
+¦       accept_invitation.php
+¦       call_status.php
+¦       call_verification.php
+¦       check_auth.php
+¦       check_call_status.php
+¦       check_login_availability.php
+¦       clear_contacts.php
+¦       create_test_users.php
+¦       get_contacts.php
+¦       get_contacts_test.php
+¦       get_rejected.php
+¦       get_rejected_test.php
+¦       get_requests.php
+¦       get_requests_count.php
+¦       get_requests_test.php
+¦       get_sent_requests.php
+¦       get_user_data.php
+¦       get_user_status.php
+¦       login.php
+¦       premium_application.php
+¦       register.php
+¦       reject_invitation.php
+¦       request_password_reset.php
+¦       save_new_password.php
+¦       search_user.php
+¦       send_invitation.php
+¦       send_invitation_test.php
+¦       signaling_server.php
+¦       simple-signal-test-websocket.html
+¦       telegram_confirm.php
+¦       test_auth.php
+¦       update_schema.php
+¦       upload_avatar.php
+¦       webrtc_signaling.php
+¦       
++---assets
+¦   +---css
+¦   ¦       avatar-styles.css
+¦   ¦       style.css
+¦   ¦       
+¦   L---js
+¦           app.js
+¦           webrtc-http.js
+¦           webrtc.js
+¦           websocket-client-wss-vkcloud.js
+¦           websocket-client.js
+¦           
++---avatars
+¦       0MqDAKNTLzVwUaE4.jpg
+¦       2fICAvmNZVoiwr3K.jpg
+¦       32ZwXAjtdPem8uDF.jpg
+¦       5ZbkDya18qxnc7AC.jpg
+¦       65cp91VDzJoiZbIE.jpg
+¦       6DXnVEcUA1HOvTiq.jpg
+¦       6k5IYGeQMNZF08uA.jpg
+¦       7ElZXKJuAseDGjN8.jpg
+¦       ASG9xOa6PkgeBdD8.jpg
+¦       BHjR1ZhQb04aWFOp.jpg
+¦       bUi5JSRry9dOBlpX.jpg
+¦       ctL57n36p2jEYfBr.jpg
+¦       dI9RWGrxs8CbAa7O.jpg
+¦       DoR4F69cSpLW2ZEK.jpg
+¦       ibnSI0tEkwZQf2Xv.jpg
+¦       iC8cL7evWgBh4G5p.jpg
+¦       IfzWn8AhZ9MlLkgG.jpg
+¦       izjr6q7vmWO50oVu.jpg
+¦       juD74UThP03cexOI.jpg
+¦       L89WONtUYzX2HIck.jpg
+¦       ML4g0Rd9wISpiCsP.jpg
+¦       MOXgJo3TZq0B6dcR.jpg
+¦       NaWtpEOZ1mBSbi5F.jpg
+¦       NrzxM5wC68b1KlmQ.jpg
+¦       q98AcpHBW5UfmnEV.jpg
+¦       rXAYWHsTEjhtKfqU.jpg
+¦       WBaCgncNRHmPyGir.jpg
+¦       x60bEH2lireomuSw.jpg
+¦       xOtocbRNFiCV2nQJ.jpg
+¦       YTMZ6ujDehBEKPmJ.jpg
+¦       zqXySQ0iFEuboA9r.jpg
+¦       zZJaoyATOdlqwDnp.jpg
+¦       
++---avtr
+¦   +---api
+¦   ¦       change_password.php
+¦   ¦       get_user_data.php
+¦   ¦       update_status.php
+¦   ¦       upload_avatar.php
+¦   ¦       
+¦   +---avatars
+¦   ¦       0qdVnfxvYIBeF6yz.jpg
+¦   ¦       57XYiPFkCVG08r3U.jpg
+¦   ¦       5jtBrlQ3e8Y62yUo.jpg
+¦   ¦       8hFqHr9p2fjLwJyW.jpg
+¦   ¦       8zciCgtmqNfLDpru.jpg
+¦   ¦       athyovZxB8JCVcwG.jpg
+¦   ¦       cSQit5UkyIKD1sTb.jpg
+¦   ¦       M1z5UybRnxq3WPDI.jpg
+¦   ¦       MXDvFcuws67hxftC.jpg
+¦   ¦       OK9ZICGHq7SknxDW.jpg
+¦   ¦       rXUYuD6FAhclzftV.jpg
+¦   ¦       zatU3p6yINXgAuTs.jpg
+¦   ¦       ZLnzIuDryQB65tH4.jpg
+¦   ¦       
+¦   +---css
+¦   ¦       avatar-styles.css
+¦   ¦       password-styles.css
+¦   ¦       profile-styles.css
+¦   ¦       
+¦   L---js
+¦           avatar-handler.js
+¦           password-handler.js
+¦           
++---images
+¦       background.png
+¦       
++---includes
+¦       auth.php
+¦       contacts.php
+¦       
+L---js
+        auth-system.js
+        avatar-handler.js
+        calls-from-chat.js
+        calls-websocket.js
+        config.js
+        connection-monitoring.js
+        contacts-handler.js
+        friends-system.js
+        indexeddb-storage.js
+        invite-system.js
+        localstorage-optimization.js
+        main-app.js
+        message-deletion-system.js
+        messaging-system.js
+        p2p-functions.js
+        p2p-management.js
+        p2p-system.js
+        password-reset.js
+        ping-pong-monitoring.js
+        queue-system.js
+        request-names-loader.js
+        requests-counter.js
+        timeout-system.js
+        ui-calls.js
+        ui-indicators.js
+        

@@ -26,7 +26,16 @@
             const uploadBtn = document.getElementById('uploadAvatarBtn');
             if (uploadBtn) {
                 uploadBtn.addEventListener('click', () => {
-                    document.getElementById('avatarInput').click();
+                    // Проверяем, находимся ли мы в нативном приложении
+                    const isNative = window.Capacitor && window.Capacitor.isNativePlatform();
+                    
+                    if (isNative) {
+                        // Используем нативные плагины
+                        showImageSourceDialog();
+                    } else {
+                        // Используем стандартный HTML input для веб-браузера
+                        document.getElementById('avatarInput').click();
+                    }
                 });
             }
 
@@ -36,7 +45,109 @@
             }
         });
 
-        // Шаг 1: Обработка выбора файла
+        // Показать диалог выбора источника изображения
+        async function showImageSourceDialog() {
+            if (!window.Capacitor?.Plugins?.ActionSheet) {
+                console.error('ActionSheet плагин не доступен');
+                showNotification('Плагин ActionSheet не доступен', 'error');
+                return;
+            }
+
+            try {
+                const result = await window.Capacitor.Plugins.ActionSheet.showActions({
+                    title: 'Выберите источник изображения',
+                    message: 'Откуда взять фото для аватара?',
+                    options: [
+                        {
+                            title: 'Камера',
+                            icon: 'camera'
+                        },
+                        {
+                            title: 'Галерея',
+                            icon: 'photos'
+                        },
+                        {
+                            title: 'Отмена',
+                            icon: 'close',
+                            style: 'cancel'
+                        }
+                    ]
+                });
+
+                if (result.index === 0) {
+                    // Камера
+                    await takePhotoFromCamera();
+                } else if (result.index === 1) {
+                    // Галерея
+                    await selectPhotoFromGallery();
+                }
+            } catch (error) {
+                console.error('Ошибка при показе диалога:', error);
+                showNotification('Ошибка при выборе источника', 'error');
+            }
+        }
+
+        // Сделать фото с камеры
+        async function takePhotoFromCamera() {
+            if (!window.Capacitor?.Plugins?.Camera) {
+                console.error('Camera плагин не доступен');
+                showNotification('Плагин Camera не доступен', 'error');
+                return;
+            }
+
+            try {
+                const image = await window.Capacitor.Plugins.Camera.getPhoto({
+                    quality: 90,
+                    allowEditing: false,
+                    resultType: 'DataUrl',
+                    source: 'Camera'
+                });
+
+                console.log('Фото сделано с камеры');
+                processImageFromPlugin(image.dataUrl);
+            } catch (error) {
+                console.error('Ошибка при съемке фото:', error);
+                showNotification('Ошибка при съемке фото', 'error');
+            }
+        }
+
+        // Выбрать фото из галереи
+        async function selectPhotoFromGallery() {
+            if (!window.Capacitor?.Plugins?.Camera) {
+                console.error('Camera плагин не доступен');
+                showNotification('Плагин Camera не доступен', 'error');
+                return;
+            }
+
+            try {
+                const image = await window.Capacitor.Plugins.Camera.getPhoto({
+                    quality: 90,
+                    allowEditing: false,
+                    resultType: 'DataUrl',
+                    source: 'Photos'
+                });
+
+                console.log('Фото выбрано из галереи');
+                processImageFromPlugin(image.dataUrl);
+            } catch (error) {
+                console.error('Ошибка при выборе фото:', error);
+                showNotification('Ошибка при выборе фото', 'error');
+            }
+        }
+
+        // Обработать изображение от плагина
+        function processImageFromPlugin(dataUrl) {
+            console.log('Обрабатываем изображение от плагина');
+            
+            originalImage = new Image();
+            originalImage.onload = () => {
+                console.log('Изображение загружено:', originalImage.width, 'x', originalImage.height);
+                compressImage(); // Автоматически сжимаем
+            };
+            originalImage.src = dataUrl;
+        }
+
+        // Шаг 1: Обработка выбора файла (для веб-браузера)
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (!file) return;

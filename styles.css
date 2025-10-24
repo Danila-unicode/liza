@@ -1473,8 +1473,10 @@
       }
       
       .chat-input-panel {
-          padding: 8px 12px !important;
+          padding: 10px !important;
           gap: 8px !important;
+          display: flex !important;
+          align-items: center !important;
       }
       
       .chat-message-input {
@@ -1483,9 +1485,24 @@
       }
       
       .chat-send-btn, .chat-emoji-btn {
+          flex-shrink: 0 !important;
           width: 44px !important;
           height: 44px !important;
           padding: 10px !important;
+      }
+      
+      /* Дополнительные стили для панели ввода на мобильных */
+      .chat-input-panel {
+          padding: 10px !important;
+          gap: 8px !important;
+          display: flex !important;
+          align-items: center !important;
+          flex-wrap: nowrap !important;
+      }
+      
+      .chat-message-input {
+          min-width: 0 !important;
+          flex: 1 !important;
       }
       
       .tab-content { 
@@ -2014,22 +2031,120 @@
   background: white !important;
   }
   
-  .chat-modal {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 10000 !important;
-  background: rgba(0,0,0,0.9) !important;
-  }
   
-  .chat-modal > div {
-  width: 100vw !important;
-  height: 100vh !important;
-  border-radius: 0 !important;
-  max-width: none !important;
-  max-height: none !important;
+  /* Исправления для мобильного чата - chatContainer */
+  @media (max-width: 768px) {
+      .chat-container {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          z-index: 1000 !important;
+      }
+      
+      .chat-container button[onclick="closeChat()"] {
+          font-size: 12px !important;
+          padding: 0 !important;
+          background: #e74c3c !important;
+          color: white !important;
+          border: none !important;
+          border-radius: 50% !important;
+          cursor: pointer !important;
+          font-weight: bold !important;
+          width: 40px !important;
+          height: 40px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+      }
+      
+      .chat-container h3 {
+          font-size: 18px !important;
+          margin: 0 !important;
+      }
+      
+      .chat-input-panel {
+          position: fixed !important;
+          bottom: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          background: white !important;
+          border-top: 1px solid #ddd !important;
+          padding: 10px !important;
+          z-index: 1001 !important;
+      }
+      
+      .chat-input-panel input[placeholder="Введите сообщение..."] {
+          min-width: 0 !important;
+          flex: 1 !important;
+          padding: 10px !important;
+          border: 1px solid #ddd !important;
+          border-radius: 5px !important;
+      }
+      
+      .chat-input-panel button {
+          flex-shrink: 0 !important;
+          margin-left: 5px !important;
+      }
+      
+      .chat-messages {
+          height: calc(100vh - 200px) !important;
+          padding-bottom: 80px !important;
+      }
+      
+      /* Мобильные навигационные вкладки - надписи под иконками */
+      .navigation-tabs {
+          display: flex !important;
+          flex-direction: row !important;
+          gap: 5px !important;
+          justify-content: space-around !important;
+          padding: 3px 0 !important;
+      }
+      
+      .navigation-tabs .tab {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          text-align: center !important;
+          padding: 2px 1px !important;
+          gap: 1px !important;
+          flex: 1 !important;
+          position: relative !important;
+          min-height: auto !important;
+      }
+      
+      .navigation-tabs .tab i {
+          font-size: 16px !important;
+          margin: 0 !important;
+          position: relative !important;
+      }
+      
+      .navigation-tabs .tab span {
+          font-size: 10px !important;
+          line-height: 1.0 !important;
+      }
+      
+      /* Исправляем позиционирование красного кружка уведомления */
+      .navigation-tabs .tab .requests-counter {
+          position: absolute !important;
+          top: -2px !important;
+          right: calc(50% - 8px) !important;
+          transform: translateX(50%) !important;
+          z-index: 10 !important;
+          margin-left: 0 !important;
+      }
+      
+      .navigation-tabs .tab .notification-badge,
+      .navigation-tabs .tab .badge,
+      .navigation-tabs .tab [class*="badge"],
+      .navigation-tabs .tab [class*="notification"] {
+          position: absolute !important;
+          top: -2px !important;
+          right: 50% !important;
+          transform: translateX(50%) !important;
+          z-index: 10 !important;
+      }
   }
   
   /* ÐžÐ¿Ñ‚Ð¸Ð¼Ð¸Ð·Ð°Ñ†Ð¸Ñ h3 Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÐ¾Ð² Ð´Ð»Ñ Ð¼Ð¾Ð±Ð¸Ð»ÑŒÐ½Ñ‹Ñ… */
@@ -3159,6 +3274,7 @@
     box-sizing: border-box !important;
     min-width: auto !important;
 }
+
 
 .copy-button {
     background: var(--accent);

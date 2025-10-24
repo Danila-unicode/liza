@@ -477,6 +477,9 @@
             // Воспроизводим звук входящего звонка
             playIncomingCallSound();
             
+            // Показываем уведомление о входящем звонке (разбудит телефон)
+            showIncomingCallNotification(signal.from, callType);
+            
             currentUser.log(`📞 Входящий звонок от ${signal.from}`, 'info');
             
             // Сохраняем тип звонка для использования при принятии
@@ -3689,6 +3692,19 @@
                 return;
             }
             
+            // Показываем уведомление (Capacitor или Web)
+            try {
+                if (typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform()) {
+                    // Нативное приложение - используем Capacitor
+                    showCapacitorNotification(senderUsername, message);
+                } else {
+                    // Веб-приложение - используем Web Notifications API
+                    showWebNotification(senderUsername, message);
+                }
+            } catch (error) {
+                // Ошибка при показе уведомления
+            }
+            
             // Создаем уведомление
             const notification = document.createElement('div');
             notification.style.cssText = `
@@ -5428,7 +5444,7 @@
         }
         
         // Обновление списка друзей
-        function updateFriendsList() {
+        async function updateFriendsList() {
             const friendsList = document.getElementById('friendsList');
             
             if (friendsData.friends.length === 0) {
@@ -5436,9 +5452,21 @@
                 return;
             }
             
-            const friendsHtml = friendsData.friends.map(friend => {
+            // Создаем HTML для каждого друга с получением имени из записной книжки
+            const friendsHtml = await Promise.all(friendsData.friends.map(async friend => {
                 const unreadCount = unreadMessages[friend.username] || 0;
                 const unreadIndicator = unreadCount > 0 ? `<span class="unread-indicator">${unreadCount}</span>` : '';
+                
+                // Получаем имя контакта из записной книжки
+                let displayName = friend.username; // По умолчанию показываем номер
+                try {
+                    const contactName = await getContactName(friend.username);
+                    if (contactName) {
+                        displayName = contactName; // Показываем имя, если найдено
+                    }
+                } catch (error) {
+                    // Если ошибка получения имени, оставляем номер
+                }
                 
                 return `
                     <div class="friend-item" data-friend="${friend.username}" onclick="openChat('${friend.username}')" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f0f0f0'" onmouseout="this.style.backgroundColor='white'">
@@ -5446,7 +5474,7 @@
                             <div class="friend-avatar" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #ddd; margin-right: 8px; vertical-align: middle; text-align: center; line-height: 20px; font-size: 12px; color: #666;" data-user-id="${friend.contact_user_id}">
                                 <i class="fas fa-user" style="font-size: 10px;"></i>
                             </div>
-                            <span class="friend-display-name" data-phone="${friend.username}">${friend.username}</span>${unreadIndicator}
+                            <span class="friend-display-name" data-phone="${friend.username}">${displayName}</span>${unreadIndicator}
                         </div>
                         <div class="actions" onclick="event.stopPropagation()">
                             <div class="call-buttons">
@@ -5457,9 +5485,9 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+            }));
             
-            friendsList.innerHTML = friendsHtml;
+            friendsList.innerHTML = friendsHtml.join('');
             
             // Загружаем аватары для всех друзей
             loadFriendsAvatars();
@@ -6003,10 +6031,77 @@
         }
 
 
+        // Инициализация системы уведомлений
+        function initNotifications() {
+            if (typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform()) {
+                initCapacitorNotifications();
+            }
+        }
+        
+        // Инициализация Capacitor уведомлений
+        function initCapacitorNotifications() {
+            // Проверяем доступность плагина
+            if (typeof Capacitor.Plugins.LocalNotifications === 'undefined') {
+                return;
+            }
+            
+            // Запрашиваем разрешения
+            Capacitor.Plugins.LocalNotifications.requestPermissions().then(result => {
+                // Разрешения запрошены
+            }).catch(error => {
+                // Ошибка запроса разрешений
+            });
+        }
+        
+        // Показ уведомления через Capacitor (для нативных приложений)
+        function showCapacitorNotification(senderUsername, message) {
+            // Проверяем доступность плагина
+            if (typeof Capacitor.Plugins.LocalNotifications === 'undefined') {
+                return;
+            }
+            
+            // Обрезаем длинное сообщение
+            const shortMessage = message.length > 100 ? message.substring(0, 100) + '...' : message;
+            
+            // Создаем уведомление
+            const notificationId = Math.floor(Date.now() / 1000);
+            
+            Capacitor.Plugins.LocalNotifications.schedule({
+                notifications: [{
+                    title: `💬 ${senderUsername}`,
+                    body: shortMessage,
+                    id: notificationId,
+                    schedule: { at: new Date(Date.now() + 100) }, // Через 100мс - почти мгновенно
+                    sound: 'default',
+                    vibrate: true, // Вибрация
+                    priority: 'high', // Высокий приоритет
+                    requireInteraction: false, // Не требует взаимодействия
+                    attachments: undefined,
+                    actionTypeId: '',
+                    extra: {
+                        senderUsername: senderUsername,
+                        type: 'chat_message'
+                    }
+                }]
+            }).then(() => {
+                // Уведомление показано
+            }).catch(error => {
+                // Ошибка показа уведомления
+            });
+        }
+        
+        // Показ уведомления через Web Notifications API (для веб-приложений)
+        function showWebNotification(senderUsername, message) {
+            // Web уведомления не нужны в нативном приложении
+        }
+
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', async function() {
             // Инициализируем IndexedDB
             await initMessageDB();
+            
+            // Инициализируем систему уведомлений
+            initNotifications();
             
             // Инициализируем систему удаления сообщений
             initDeleteSystem();
@@ -6343,10 +6438,21 @@
                 return;
             }
             
-            // Используем тот же стиль, что и обычный список друзей
-            const friendsHtml = friends.map(friend => {
+            // Создаем HTML для каждого друга с получением имени из записной книжки
+            const friendsHtml = await Promise.all(friends.map(async friend => {
                 const unreadCount = unreadMessages[friend.username] || 0;
                 const unreadIndicator = unreadCount > 0 ? `<span class="unread-indicator">${unreadCount}</span>` : '';
+                
+                // Получаем имя контакта из записной книжки
+                let displayName = friend.username; // По умолчанию показываем номер
+                try {
+                    const contactName = await getContactName(friend.username);
+                    if (contactName) {
+                        displayName = contactName; // Показываем имя, если найдено
+                    }
+                } catch (error) {
+                    // Если ошибка получения имени, оставляем номер
+                }
                 
                 return `
                     <div class="friend-item" data-friend="${friend.username}" onclick="openChat('${friend.username}')" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f0f0f0'" onmouseout="this.style.backgroundColor='white'">
@@ -6354,7 +6460,7 @@
                             <div class="friend-avatar" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #ddd; margin-right: 8px; vertical-align: middle; text-align: center; line-height: 20px; font-size: 12px; color: #666;" data-user-id="${friend.contact_user_id}">
                                 <i class="fas fa-user" style="font-size: 10px;"></i>
                             </div>
-                            <span class="friend-display-name" data-phone="${friend.username}">${friend.username}</span>${unreadIndicator}
+                            <span class="friend-display-name" data-phone="${friend.username}">${displayName}</span>${unreadIndicator}
                         </div>
                         <div class="actions" onclick="event.stopPropagation()">
                             <div class="call-buttons">
@@ -6365,9 +6471,9 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+            }));
             
-            friendsList.innerHTML = friendsHtml;
+            friendsList.innerHTML = friendsHtml.join('');
             
             // Загружаем аватары для отфильтрованных друзей
             loadFilteredFriendsAvatars(friends);
